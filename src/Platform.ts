@@ -62,9 +62,15 @@ export class Platform implements DynamicPlatformPlugin {
      */
     private onAvailable = (devices: HAP.Device[]): void => {
         for (const device of devices) {
+            console.log(`[PLATFORM AVAILABLE] Device: ${device.name}, Type: ${device.type}, ID: ${device.id}`);
             const accessory = Accessories.create(this.homebridge, device, this.config, this.log);
 
-            accessory?.register();
+            if (accessory != null) {
+                console.log(`[PLATFORM AVAILABLE] Created accessory, registering...`);
+                accessory.register();
+            } else {
+                console.log(`[PLATFORM AVAILABLE] No accessory created (disabled in config)`);
+            }
 
             this.log.debug(`${device.type} available ${device.name}`);
 
@@ -79,12 +85,20 @@ export class Platform implements DynamicPlatformPlugin {
      * Homebridge.
      */
     private onAction = (device: HAP.Device, button: HAP.Button, action: HAP.Action): void => {
-        console.log(`[PLATFORM ACTION] Device: ${device.name}, Button: ${button.name}, Action: ${action}`);
+        console.log(
+            `[PLATFORM ACTION] Device: ${device.name}, Type: ${device.type}, ID: ${device.id}, Button: ${button.name}, Action: ${action}`,
+        );
 
         const accessory = Accessories.get(this.homebridge, device);
 
-        if (accessory == null || accessory.onAction == null) {
-            console.log(`[PLATFORM ACTION ERROR] No accessory or onAction handler for device ${device.name}`);
+        if (accessory == null) {
+            console.log(`[PLATFORM ACTION ERROR] Accessory not found for device ${device.name} (ID: ${device.id})`);
+            console.log(`[PLATFORM ACTION ERROR] UUID would be: ${this.homebridge.hap.uuid.generate(device.id)}`);
+            return;
+        }
+
+        if (accessory.onAction == null) {
+            console.log(`[PLATFORM ACTION ERROR] Accessory found but no onAction handler for device ${device.name}`);
             return;
         }
 
