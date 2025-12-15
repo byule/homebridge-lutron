@@ -79,9 +79,12 @@ export class Platform implements DynamicPlatformPlugin {
      * Homebridge.
      */
     private onAction = (device: HAP.Device, button: HAP.Button, action: HAP.Action): void => {
+        console.log(`[PLATFORM ACTION] Device: ${device.name}, Button: ${button.name}, Action: ${action}`);
+
         const accessory = Accessories.get(this.homebridge, device);
 
         if (accessory == null || accessory.onAction == null) {
+            console.log(`[PLATFORM ACTION ERROR] No accessory or onAction handler for device ${device.name}`);
             return;
         }
 

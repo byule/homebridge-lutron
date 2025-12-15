@@ -1,7 +1,7 @@
 import * as Leap from "@mkellsy/leap-client";
 
 import { API, Logging, Service } from "homebridge";
-import { Action, Button, DeviceType } from "@mkellsy/hap-device";
+import { Action, Button } from "@mkellsy/hap-device";
 
 import { Common } from "./Common";
 import { Device } from "./Device";
@@ -48,9 +48,11 @@ export class Keypad extends Common<Leap.Keypad> implements Device {
             service.setCharacteristic(this.homebridge.hap.Characteristic.ConfiguredName, button.name);
             service.setCharacteristic(this.homebridge.hap.Characteristic.ServiceLabelIndex, button.index);
 
+            const supportsLongPress = (button as { supportsLongPress?: boolean }).supportsLongPress;
+
             service.getCharacteristic(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent).setProps({
                 maxValue:
-                    (button as any).supportsLongPress === false
+                    supportsLongPress === false
                         ? this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS
                         : this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.LONG_PRESS,
             });
@@ -66,29 +68,28 @@ export class Keypad extends Common<Leap.Keypad> implements Device {
      * @param action The action invoked (press, release, ...).
      */
     public onAction(button: Button, action: Action): void {
+        console.log(`[KEYPAD ACTION] ${this.device.name} - ${button.name} - ${action}`);
+        this.log.info(`Keypad: ${this.device.name} ${button.name} ${action}`);
+
         const service = this.services.get(button.id);
         const characteristic = service?.getCharacteristic(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent);
 
         if (service != null && characteristic != null) {
             switch (action) {
                 case "Press":
-                    this.log.debug(`Keypad: ${this.device.name} ${button.name} Pressed`);
-
                     characteristic.updateValue(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS);
                     break;
 
                 case "DoublePress":
-                    this.log.debug(`Keypad: ${this.device.name} ${button.name} Double Pressed`);
-
                     characteristic.updateValue(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS);
                     break;
 
                 case "LongPress":
-                    this.log.debug(`Keypad: ${this.device.name} ${button.name} Long Pressed`);
-
                     characteristic.updateValue(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.LONG_PRESS);
                     break;
             }
+        } else {
+            console.log(`[KEYPAD ACTION ERROR] Service or characteristic not found for button ${button.id}`);
         }
     }
 }
