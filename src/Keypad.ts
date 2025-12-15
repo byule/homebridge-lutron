@@ -50,8 +50,8 @@ export class Keypad extends Common<Leap.Keypad> implements Device {
 
             service.getCharacteristic(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent).setProps({
                 maxValue:
-                    device.type === DeviceType.Keypad
-                        ? this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS
+                    (button as any).supportsLongPress === false
+                        ? this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS
                         : this.homebridge.hap.Characteristic.ProgrammableSwitchEvent.LONG_PRESS,
             });
 
