@@ -62,6 +62,21 @@
                 "type": "boolean",
                 "title": "Expose Timeclocks",
                 "default": true
+            },
+            "buttonConfig": {
+                "type": "object",
+                "title": "Button Configuration",
+                "description": "Configure trigger behavior for individual buttons by name. Example: {\"Goodbye\": {\"triggerOn\": \"press\"}}",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                        "triggerOn": {
+                            "type": "string",
+                            "enum": ["press", "release", "pressAndRelease"],
+                            "description": "Which hardware event triggers the button: 'press' (press only), 'release' (release only, default), 'pressAndRelease' (full state machine with long press)"
+                        }
+                    }
+                }
             }
         }
     }

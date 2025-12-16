@@ -3,6 +3,7 @@
 ## Build Process for homebridge-lutron
 
 ### Quick Build (Skip Tests)
+
 ```bash
 # 1. Comment out authority file copy in ./build script (lines 25-30)
 #    It fails because authority file doesn't exist in leap-client module
@@ -18,6 +19,7 @@ git push origin main
 ```
 
 ### Full Build (With Tests)
+
 ```bash
 npm run build
 # Note: This runs format, lint, test, then build
@@ -26,6 +28,7 @@ npm run build
 ```
 
 ### Deployment to Pi
+
 ```bash
 # Pull changes on Pi
 ssh admin@192.168.1.174 "cd /var/lib/homebridge/node_modules/@mkellsy/homebridge-lutron && sudo -u homebridge git stash && sudo -u homebridge git pull origin main"
@@ -42,6 +45,7 @@ ssh admin@192.168.1.174 "sudo journalctl -u homebridge -f --no-pager"
 Located at: `/Users/byule/leap-client`
 
 ### Quick Build
+
 ```bash
 cd ~/leap-client
 rm -rf temp && npx tsc  # Generate declarations in temp/
@@ -56,6 +60,7 @@ git push origin main
 ```
 
 ### Deployment to Pi
+
 ```bash
 ssh admin@192.168.1.174 "cd /var/lib/homebridge/node_modules/@mkellsy/homebridge-lutron/node_modules/@mkellsy/leap-client && sudo -u homebridge git stash && sudo -u homebridge git pull origin main"
 
@@ -77,19 +82,22 @@ ssh admin@192.168.1.174 "cd /var/lib/homebridge/node_modules/@mkellsy/homebridge
 ## Current State
 
 ### Palladium Keypad Support
-- Modified `~/leap-client/src/Devices/Devices.ts` to classify PalladiomKeypad as Remote type
-- Added PalladiomKeypad to ButtonMap in `~/leap-client/src/Devices/Remote/ButtonMap.ts`
-- This gives Palladium keypads single/double/long press support via TriggerController
+
+-   Modified `~/leap-client/src/Devices/Devices.ts` to classify PalladiomKeypad as Remote type
+-   Added PalladiomKeypad to ButtonMap in `~/leap-client/src/Devices/Remote/ButtonMap.ts`
+-   This gives Palladium keypads single/double/long press support via TriggerController
 
 ### Debug Logging
-- Added debug logging to Platform.ts onAvailable and onAction handlers
-- Helps track device registration and button action routing
+
+-   Added debug logging to Platform.ts onAvailable and onAction handlers
+-   Helps track device registration and button action routing
 
 ## Pi Information
-- IP: 192.168.1.174
-- User: admin
-- Homebridge runs as: homebridge user
-- Homebridge directory: /var/lib/homebridge
-- Config: /var/lib/homebridge/config.json
-- Certificates: /home/homebridge/.leap/pairing
-- Node/npm: /opt/homebridge/bin/
+
+-   IP: 192.168.1.174
+-   User: admin
+-   Homebridge runs as: homebridge user
+-   Homebridge directory: /var/lib/homebridge
+-   Config: /var/lib/homebridge/config.json
+-   Certificates: /home/homebridge/.leap/pairing
+-   Node/npm: /opt/homebridge/bin/

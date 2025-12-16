@@ -38,7 +38,14 @@ export class Platform implements DynamicPlatformPlugin {
         this.homebridge = homebridge;
 
         this.homebridge.on("didFinishLaunching", () => {
-            Leap.connect().on("Available", this.onAvailable).on("Action", this.onAction).on("Update", this.onUpdate);
+            const leapConfig = {
+                buttonConfig: this.config.buttonConfig,
+            };
+
+            Leap.connect(false, leapConfig)
+                .on("Available", this.onAvailable)
+                .on("Action", this.onAction)
+                .on("Update", this.onUpdate);
         });
     }
 
@@ -62,16 +69,20 @@ export class Platform implements DynamicPlatformPlugin {
      */
     private onAvailable = (devices: HAP.Device[]): void => {
         for (const device of devices) {
-            const accessory = Accessories.create(this.homebridge, device, this.config, this.log);
+            try {
+                const accessory = Accessories.create(this.homebridge, device, this.config, this.log);
 
-            if (accessory != null) {
-                accessory.register();
-            }
+                if (accessory != null) {
+                    accessory.register();
+                }
 
-            this.log.debug(`${device.type} available ${device.name}`);
+                this.log.debug(`${device.type} available ${device.name}`);
 
-            if (accessory == null) {
-                Accessories.remove(this.homebridge, device);
+                if (accessory == null) {
+                    Accessories.remove(this.homebridge, device);
+                }
+            } catch (error) {
+                this.log.error(`Error processing ${device.name}: ${error}`);
             }
         }
     };

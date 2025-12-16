@@ -3,10 +3,11 @@
 ## The Problem We Had
 
 We were:
-- Manually cloning git repos into node_modules ❌
-- Pulling git updates inside node_modules ❌
-- Fighting cache issues at multiple levels ❌
-- No visibility into which code was actually running ❌
+
+-   Manually cloning git repos into node_modules ❌
+-   Pulling git updates inside node_modules ❌
+-   Fighting cache issues at multiple levels ❌
+-   No visibility into which code was actually running ❌
 
 This is NOT how Node.js or Homebridge development works.
 
@@ -93,11 +94,11 @@ sudo systemctl restart homebridge
 
 ## What We Learned
 
-- ❌ Don't manually clone into node_modules
-- ❌ Don't git pull inside node_modules
-- ✅ Use `npm link` for development
-- ✅ Use `npm install -g git+https://...` for testing prod-like installs
-- ✅ Always rebuild homebridge-lutron after leap-client changes (esbuild bundling)
+-   ❌ Don't manually clone into node_modules
+-   ❌ Don't git pull inside node_modules
+-   ✅ Use `npm link` for development
+-   ✅ Use `npm install -g git+https://...` for testing prod-like installs
+-   ✅ Always rebuild homebridge-lutron after leap-client changes (esbuild bundling)
 
 ## Quick Reference
 

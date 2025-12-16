@@ -41,7 +41,10 @@ export class Keypad extends Common<Leap.Keypad> implements Device {
                     button.name,
                 );
 
-            service.addCharacteristic(this.homebridge.hap.Characteristic.ConfiguredName);
+            // Only add ConfiguredName if it doesn't exist
+            if (!service.testCharacteristic(this.homebridge.hap.Characteristic.ConfiguredName)) {
+                service.addCharacteristic(this.homebridge.hap.Characteristic.ConfiguredName);
+            }
             service.addLinkedService(labelService);
 
             service.setCharacteristic(this.homebridge.hap.Characteristic.Name, button.name);
